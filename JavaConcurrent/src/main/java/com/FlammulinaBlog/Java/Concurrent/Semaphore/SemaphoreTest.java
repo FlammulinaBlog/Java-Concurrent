@@ -1,4 +1,4 @@
-package com.FlammulinaBlog.Java.Concurrent;
+package com.FlammulinaBlog.Java.Concurrent.Semaphore;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,12 +11,12 @@ import java.util.concurrent.Semaphore;
  * <p/>
  * @author flammulinaBlog
  */
-public class BoundedHashSet<T> {
+public class SemaphoreTest<T> {
 
     private final Set<T> set;
     private final Semaphore sem;
 
-    public BoundedHashSet(int bound) {
+    public SemaphoreTest(int bound) {
         this.set = Collections.synchronizedSet(new HashSet<T>());
         this.sem = new Semaphore(bound);
     }
@@ -48,7 +48,7 @@ public class BoundedHashSet<T> {
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) {
     	
-    	BoundedHashSet test=new BoundedHashSet(1);
+    	SemaphoreTest test=new SemaphoreTest(1);
     	try {
 			if(test.add("new")) {
 				test.remove("new");
