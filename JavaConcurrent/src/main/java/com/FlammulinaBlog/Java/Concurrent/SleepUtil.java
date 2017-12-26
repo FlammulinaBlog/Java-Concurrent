@@ -4,8 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 休眠工具类
- * User: shijingui
- * Date: 2016/2/4
+ * @author flammulinaBlog
  */
 public class SleepUtil {
 
