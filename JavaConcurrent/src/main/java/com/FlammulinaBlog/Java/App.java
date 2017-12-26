@@ -1,4 +1,4 @@
-package com.FlammulinaBlog.JavaConcurrent;
+package com.FlammulinaBlog.Java;
 
 /**
  * Hello world!
