@@ -10,7 +10,7 @@ public class BoundedBufferQueueTest {
 
     public static void main(String[] args) {
 
-        BoundedBufferQueue<Integer> queue = new BoundedBufferQueue<>(1200);
+        BoundedBufferQueue<Integer> queue = new BoundedBufferQueue<Integer>(1200);
 
         ExecutorService executorService = Executors.newCachedThreadPool();
 
