@@ -1,7 +1,8 @@
 package com.FlammulinaBlog.Java.Concurrent.BlockingQueue;
 
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * 
@@ -24,20 +25,29 @@ public class ConsumerProducer {
     static class Consumer implements Runnable {
         private BlockingQueue blockingQueue;
 
-        public Consumer(BlockingQueue queue) {
-            this.blockingQueue = queue;
+        private String name;
+
+        private CountDownLatch latch;
+
+        public Consumer(BlockingQueue blockingQueue, String name, CountDownLatch latch) {
+            this.blockingQueue = blockingQueue;
+            this.name = name;
+            this.latch = latch;
         }
+
 
         @Override
         public void run() {
             while (true) {
                 try {
+                    Thread.sleep(500L);
                     //阻塞式消费
                     Object val = blockingQueue.take();
-                    System.out.println("消费信息：" + val);
+                    System.out.println(name + "消费信息：" + val);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
             }
         }
     }
@@ -46,8 +56,10 @@ public class ConsumerProducer {
     static class Producer implements Runnable {
         private final BlockingQueue blockingQueue;
 
-        public Producer(BlockingQueue queue) {
+        private CountDownLatch latch;
+        public Producer(BlockingQueue queue, CountDownLatch latch) {
             this.blockingQueue = queue;
+            this.latch = latch;
         }
 
         @Override
@@ -56,21 +68,33 @@ public class ConsumerProducer {
                 try {
                     //生产消息(阻塞)
                     blockingQueue.put(i + ":message");
+
                     System.out.println("生产消息：" + i + ":message");
+                    latch.countDown();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
+
         }
     }
 
 
-    public static void main(String[] args) {
-        BlockingQueue queue = new LinkedBlockingDeque();
-        Consumer consumer = new Consumer(queue);
-        Producer producer = new Producer(queue);
-        new Thread(producer).start();
-        new Thread(consumer).start();
+    public static void main(String[] args) throws InterruptedException {
 
+        CountDownLatch latch = new CountDownLatch(100);
+
+
+        BlockingQueue queue = new ArrayBlockingQueue(15);
+        Producer producer = new Producer(queue, latch);
+        new Thread(producer).start();
+
+
+        for (int i = 0; i < 20; i++) {
+            Consumer consumer = new Consumer(queue, "consumer" + i, latch);
+            new Thread(consumer).start();
+        }
+        latch.await();
+        System.out.println("执行完成");
     }
 }
